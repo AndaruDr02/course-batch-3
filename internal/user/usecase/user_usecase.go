@@ -25,6 +25,7 @@ func (uu UserUsecase) Register(c *gin.Context) {
 		Name     string
 		Email    string
 		Password string
+		NoHP     string `json:"no_hp"`
 	}
 
 	var registerRequest RegisterRequest
@@ -60,7 +61,21 @@ func (uu UserUsecase) Register(c *gin.Context) {
 		return
 	}
 
-	user := domain.NewUser(registerRequest.Name, registerRequest.Email, registerRequest.Password)
+	if registerRequest.NoHP == "" {
+		c.JSON(400, map[string]string{
+			"message": "No Hp required",
+		})
+		return
+	}
+
+	if len(registerRequest.NoHP) < 10 || len(registerRequest.NoHP) > 13 {
+		c.JSON(400, map[string]string{
+			"message": "No Hp must have 10 - 13 character",
+		})
+		return
+	}
+
+	user := domain.NewUser(registerRequest.Name, registerRequest.Email, registerRequest.Password, registerRequest.NoHP)
 	if err := uu.db.Create(user).Error; err != nil {
 		c.JSON(500, map[string]string{
 			"message": "cannot create user",

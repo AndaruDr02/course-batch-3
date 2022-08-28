@@ -20,6 +20,49 @@ func NewExerciseUsecase(db *gorm.DB) *ExerciseUsecase {
 	}
 }
 
+func (exerUseCase ExerciseUsecase) CreateExercise(c *gin.Context) {
+	type CreateExerciseRequest struct {
+		Title       string
+		Description string
+	}
+
+	var createRequest CreateExerciseRequest
+	if err := c.ShouldBind(&createRequest); err != nil {
+		c.JSON(400, map[string]string{
+			"message": "invalid input",
+		})
+		return
+	}
+
+	if createRequest.Title == "" {
+		c.JSON(400, map[string]string{
+			"message": "title required",
+		})
+		return
+	}
+
+	if createRequest.Description == "" {
+		c.JSON(400, map[string]string{
+			"message": "description required",
+		})
+		return
+	}
+
+	exercise := domain.NewExercise(createRequest.Title, createRequest.Description)
+	if err := exerUseCase.db.Create(exercise).Error; err != nil {
+		c.JSON(500, map[string]string{
+			"message": "cannot create exercise",
+		})
+		return
+	}
+
+	c.JSON(201, map[string]interface{}{
+		"id":          exercise.ID,
+		"title":       exercise.Title,
+		"description": exercise.Description,
+	})
+}
+
 func (exerUsecase ExerciseUsecase) GetExercise(c *gin.Context) {
 	paramID := c.Param("id")
 	id, err := strconv.Atoi(paramID)

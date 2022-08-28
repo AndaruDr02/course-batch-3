@@ -17,12 +17,13 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-func NewUser(name, email, password string) *User {
+func NewUser(name, email, password string, no_hp string) *User {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return &User{
 		Name:     name,
 		Email:    email,
 		Password: string(hashedPassword),
+		NoHP:     no_hp,
 	}
 }
 

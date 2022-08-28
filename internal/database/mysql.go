@@ -6,7 +6,7 @@ import (
 )
 
 func NewDabataseConn() *gorm.DB {
-	dsn := "root:root@tcp(127.0.0.1:60082)/course?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:P@ssw0rd123!@tcp(localhost:3306)/training?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)

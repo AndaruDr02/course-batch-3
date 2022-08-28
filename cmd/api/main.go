@@ -22,10 +22,13 @@ func main() {
 	})
 	// exercise
 	r.GET("/exercises/:id", middleware.WithAuthentication(userUcs), exerciseUcs.GetExercise)
-	r.GET("/exercises/:id/scores", middleware.WithAuthentication(userUcs), exerciseUcs.CalculateScore)
+	r.GET("/exercises/:id/score", middleware.WithAuthentication(userUcs), exerciseUcs.CalculateScore)
+
+	// create new exercise
+	r.POST("/exercises", middleware.WithAuthentication(userUcs), exerciseUcs.CreateExercise)
 
 	// user
 	r.POST("/register", userUcs.Register)
 	r.POST("/login", userUcs.Login)
-	r.Run(":1234")
+	r.Run(":8080")
 }
