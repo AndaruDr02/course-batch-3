@@ -48,6 +48,24 @@ func (exerUseCase ExerciseUsecase) CreateAnswer(c *gin.Context) {
 		return
 	}
 
+	var exercise domain.Exercise
+	err = exerUseCase.db.Where("id = ?", exerciseID).Preload("Questions").Take(&exercise).Error
+	if err != nil {
+		c.JSON(404, map[string]string{
+			"message": "exercise not found",
+		})
+		return
+	}
+
+	var question domain.Question
+	err = exerUseCase.db.Where("id = ?", questionID).Take(&question).Error
+	if err != nil {
+		c.JSON(404, map[string]string{
+			"message": "Question not found",
+		})
+		return
+	}
+
 	var createAnswerRequest Answers
 	createAnswerRequest.ExerciseID = exerciseID
 	createAnswerRequest.QuestionID = questionID
@@ -71,7 +89,7 @@ func (exerUseCase ExerciseUsecase) CreateAnswer(c *gin.Context) {
 
 	if err := exerUseCase.db.Create(createAnswerRequest).Error; err != nil {
 		c.JSON(500, map[string]string{
-			"message": "cannot create questions",
+			"message": "cannot create answer",
 		})
 		return
 	}
