@@ -27,6 +27,12 @@ func main() {
 	// create new exercise
 	r.POST("/exercises", middleware.WithAuthentication(userUcs), exerciseUcs.CreateExercise)
 
+	// create questions of the exercise
+	r.POST("/exercises/:id/questions", middleware.WithAuthentication(userUcs), exerciseUcs.CreateQuestions)
+
+	// create Answer the question of the exercises
+	r.POST("/exercises/:id/questions/:questionId/answer", middleware.WithAuthentication(userUcs), exerciseUcs.CreateAnswer)
+
 	// user
 	r.POST("/register", userUcs.Register)
 	r.POST("/login", userUcs.Login)
